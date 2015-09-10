@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <ctime>
 #include <fstream>
+#include <iomanip> //setprecision()
 
 
 //http://stackoverflow.com/questions/10195343/copy-a-file-in-a-sane-safe-and-efficient-way
@@ -19,22 +20,30 @@
 
 using namespace std;
 
-int _tmain(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	clock_t start, end;
+	clock_t start;
 	double time, rate;
-	int byteAmount = 1024; //Need to figure out how to determine amount of bytes transferred.
-	long bufferSize = strtol(argv[1], NULL, 10); //Need to figure out how to transfer by specific amount of bytes at a time
-	ifstream sourceFile;
-	ofstream  newFile;
+	//int byteAmount = 1024; //Need to figure out how to determine amount of bytes transferred.
+	int count = 0;
+	char BuffSize[30];
+	strcpy(BuffSize, argv[1]);
+	long bufferSize = strtol(BuffSize, NULL, 10); //Need to figure out how to transfer by specific amount of bytes at a time
 
-	char fileName[30];
-	strcpy(fileName, argv[3]);
-	strcat(fileName, ".txt");
+	char fileNameIn[30];
+	strcpy(fileNameIn, argv[2]);
+	strcat(fileNameIn, ".txt");
+
+	char fileNameOut[30];
+	strcpy(fileNameOut, argv[3]);
+	strcat(fileNameOut, ".txt");
+
+	ifstream sourceFile(fileNameIn, ios::binary);
+	ofstream  newFile(fileNameOut, ios::binary);
 
 	//Open source and create new file to copy to.
-	sourceFile.open( argv[2] ); //Is only taking in first char as input
-	newFile.open(fileName, ios::out);
+	//sourceFile.open( fileNameIn ); //Is only taking in first char as input
+	//newFile.open(fileNameOut, ios::out);
 
 	//If too many arguments are given end execution
 	if (argc > 4)
@@ -50,17 +59,28 @@ int _tmain(int argc, char *argv[])
 		start = clock();
 
 		//Needs modification to do it by variable buffer sizes
-		sourceFile.seekg(0, ios::end);
+		//sourceFile.seekg(0, ios::end);
 		//ifstream::pos_type s = sourceFile.tellg();
-		ifstream::pos_type s = bufferSize;
-		sourceFile.seekg(0);
-		char* buffer = new char[s];
+		//ifstream::pos_type s = 0;
+		//sourceFile.seekg(0);
+		char* buffer = new char[bufferSize];
 
-			sourceFile.read(buffer, s);
-			newFile.write(buffer, s);		
+		while (sourceFile.read(buffer, bufferSize))
+		{
+			//sourceFile.read(buffer, bufferSize);
+			newFile.write(buffer, bufferSize);
+			count++;
+		}
+		if (sourceFile.gcount())
+		{
+			newFile.write(buffer, sourceFile.gcount());
+		}
 
-		//Cleanup of memory
-		end = clock();
+		clock_t end = clock();
+
+		time = (double)(end - start);
+
+		//Cleanup of memory	
 		delete[] buffer;
 		sourceFile.close();
 		newFile.close();
@@ -68,17 +88,15 @@ int _tmain(int argc, char *argv[])
 	//If files don't open up then give error and close program.
 	else
 	{
-		cerr << "Chosen source file " << argv[2] << " can't be open or doesn't exist." << endl;
+		cerr << "Chosen source file " << fileNameIn << " can't be open or doesn't exist." << endl;
 		return 1;
 	}
 
-	//Calculate time spent and print result.
-	//byteAmount = counter * bufferSize;
-	time = end - start ;
+	//Calculate time spent and print result.	
+	int byteAmount = (count * bufferSize) + sourceFile.gcount();
 	rate = byteAmount / time;
-	cout << "Copied " << byteAmount<< " bytes in " << time << " seconds at the rate of " << rate << " bytes per millisecond." << endl;
-
+	//cout << setprecision(5) <<  "Copied " << byteAmount << " bytes in " << time << " seconds at the rate of " << rate << " bytes per millisecond." << endl;
+	printf("Copied %d bytes in %.10f milliseconds at the rate of %.5f bytes per millisecond\n", byteAmount, time, rate);
 
 	return 0;
 }
-
