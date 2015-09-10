@@ -6,44 +6,32 @@
 #include <stdio.h>
 #include <ctime>
 #include <fstream>
-#include <iomanip> //setprecision()
-
-
-//http://stackoverflow.com/questions/10195343/copy-a-file-in-a-sane-safe-and-efficient-way
-//Should run with a command like:
-//$ CopyFile.exe 4096 my_source_file.txt new_file_txt 
-
-//argv[0] = name of executable
-//argv[1] = buffer size
-//argv[2] = source file
-//argv[3] = name of copy file
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+	//argv[0] = name of executable
+	//argv[1] = buffer size
+	//argv[2] = source file
+	//argv[3] = name of copy file
+
 	clock_t start;
 	double time, rate;
-	//int byteAmount = 1024; //Need to figure out how to determine amount of bytes transferred.
 	int count = 0;
+
 	char BuffSize[30];
 	strcpy(BuffSize, argv[1]);
-	long bufferSize = strtol(BuffSize, NULL, 10); //Need to figure out how to transfer by specific amount of bytes at a time
+	long bufferSize = strtol(BuffSize, NULL, 10);
 
 	char fileNameIn[30];
 	strcpy(fileNameIn, argv[2]);
-	strcat(fileNameIn, ".txt");
 
 	char fileNameOut[30];
 	strcpy(fileNameOut, argv[3]);
-	strcat(fileNameOut, ".txt");
 
 	ifstream sourceFile(fileNameIn, ios::binary);
 	ofstream  newFile(fileNameOut, ios::binary);
-
-	//Open source and create new file to copy to.
-	//sourceFile.open( fileNameIn ); //Is only taking in first char as input
-	//newFile.open(fileNameOut, ios::out);
 
 	//If too many arguments are given end execution
 	if (argc > 4)
@@ -58,16 +46,10 @@ int main(int argc, char *argv[])
 	{
 		start = clock();
 
-		//Needs modification to do it by variable buffer sizes
-		//sourceFile.seekg(0, ios::end);
-		//ifstream::pos_type s = sourceFile.tellg();
-		//ifstream::pos_type s = 0;
-		//sourceFile.seekg(0);
 		char* buffer = new char[bufferSize];
 
 		while (sourceFile.read(buffer, bufferSize))
 		{
-			//sourceFile.read(buffer, bufferSize);
 			newFile.write(buffer, bufferSize);
 			count++;
 		}
@@ -75,7 +57,6 @@ int main(int argc, char *argv[])
 		{
 			newFile.write(buffer, sourceFile.gcount());
 		}
-
 		clock_t end = clock();
 
 		time = (double)(end - start);
@@ -95,8 +76,7 @@ int main(int argc, char *argv[])
 	//Calculate time spent and print result.	
 	int byteAmount = (count * bufferSize) + sourceFile.gcount();
 	rate = byteAmount / time;
-	//cout << setprecision(5) <<  "Copied " << byteAmount << " bytes in " << time << " seconds at the rate of " << rate << " bytes per millisecond." << endl;
-	printf("Copied %d bytes in %.10f milliseconds at the rate of %.5f bytes per millisecond\n", byteAmount, time, rate);
+	printf("Copied %d bytes in %f milliseconds at the rate of %.3f bytes per milliseconds.\n", byteAmount, time, rate);
 
 	return 0;
 }
