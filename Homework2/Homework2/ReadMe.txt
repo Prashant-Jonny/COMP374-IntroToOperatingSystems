@@ -1,40 +1,19 @@
-========================================================================
-    CONSOLE APPLICATION : Homework2 Project Overview
-========================================================================
+Homework2 was created using a Visual Studio console project. So this project will build but not run in Visual Studio itself.
 
-AppWizard has created this Homework2 application for you.
+In order to run this program it needs to be executed from the command line.
 
-This file contains a summary of what you will find in each of the files that
-make up your Homework2 application.
+Steps:
 
+-Navigate to the exe file in the project which should be in "Homework2\Debug\"
 
-Homework2.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
+-In order to call the exe correctly some parameters need to be given in this order:
 
-Homework2.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
+The executable itself
+buffer size
+source file name
+Name of copied file to be named
 
-Homework2.cpp
-    This is the main application source file.
+Example:
+.\Homework2.exe 2048 test.txt test2.txt
 
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named Homework2.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+I have created a text file greater than 1MB for testing purposes although any file can be put there and copied.

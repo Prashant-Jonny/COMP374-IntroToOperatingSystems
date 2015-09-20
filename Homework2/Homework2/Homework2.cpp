@@ -1,6 +1,3 @@
-// Homework2.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <iostream>
 #include <stdio.h>
@@ -11,15 +8,11 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	//argv[0] = name of executable
-	//argv[1] = buffer size
-	//argv[2] = source file
-	//argv[3] = name of copy file
-
 	clock_t start;
 	double time, rate;
 	int count = 0;
 
+	//Parsing parameters given to be used in program
 	char BuffSize[30];
 	strcpy(BuffSize, argv[1]);
 	long bufferSize = strtol(BuffSize, NULL, 10);
@@ -53,6 +46,7 @@ int main(int argc, char *argv[])
 			newFile.write(buffer, bufferSize);
 			count++;
 		}
+		//Counts the remaining bytes if the amount isn't an equal multiple of the buffer size
 		if (sourceFile.gcount())
 		{
 			newFile.write(buffer, sourceFile.gcount());
