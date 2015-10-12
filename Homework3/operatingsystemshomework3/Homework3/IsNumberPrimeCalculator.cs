@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Homework3 {
     internal class IsNumberPrimeCalculator {
@@ -14,8 +15,22 @@ namespace Homework3 {
         public void CheckIfNumbersArePrime() {
             while (true) {
                 var numberToCheck = _numbersToCheck.Dequeue();
+                //Is a second spinlock needed? or use same one from before?
+                SpinLock s = new SpinLock();
+                bool gotLock = true;
+
+
                 if (IsNumberPrime(numberToCheck)) {
+                    //spinlock here to give time to process checks when possible  
+                    if (gotLock)
+                        s.Exit();
+
+
                     _primeNumbers.Add(numberToCheck);
+
+                    //unlock here to give time for I/O to go when nothing is ready to be checked     
+                        s.Enter(ref gotLock);
+
                 }
             }
         }

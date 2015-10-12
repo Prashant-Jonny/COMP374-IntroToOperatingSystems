@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Homework3 {
     class Program {
@@ -27,7 +28,8 @@ namespace Homework3 {
          * 
          */
 
-        static void Main(string[] args) {
+        static void Main(string[] args) 
+        {
 
             AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
 
@@ -73,6 +75,6 @@ namespace Homework3 {
 
     static class Constants {
         public const long LowerBound = 1000000;
-        public const long UpperBound = 5000000;
+        public const long UpperBound = 100000000;
     }
 }

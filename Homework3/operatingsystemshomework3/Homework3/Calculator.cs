@@ -10,6 +10,11 @@ namespace Homework3 {
             var results = new List<long>();
             var numbersToCheck = new Queue<long>();
 
+            //Spinlock created
+            SpinLock s = new SpinLock();
+            bool gotLock = false;
+
+
             StartComputationThreads(results, numbersToCheck);
 
             var progressMonitor = new ProgressMonitor(results);
@@ -21,7 +26,16 @@ namespace Homework3 {
             }
             
             while (numbersToCheck.Count > 0) {
+
+                //spin lock
+                s.Enter(ref gotLock);
+
                 Thread.Sleep(100); // wait for the computation to complete.
+
+                //unlock if you got the lock
+                if (gotLock)
+                s.Exit();
+
             }
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
