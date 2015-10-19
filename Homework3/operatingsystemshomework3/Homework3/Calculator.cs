@@ -11,9 +11,7 @@ namespace Homework3 {
             var numbersToCheck = new Queue<long>();
 
             //Spinlock created
-            SpinLock s = new SpinLock();
-            bool gotLock = false;
-
+             
 
             StartComputationThreads(results, numbersToCheck);
 
@@ -24,18 +22,20 @@ namespace Homework3 {
             foreach (var value in reader.ReadIntegers()) {
                 numbersToCheck.Enqueue(value);
             }
-            
-            while (numbersToCheck.Count > 0) {
 
-                //spin lock
-                s.Enter(ref gotLock);
+            //spin lock
+            if (Spinlock.s.IsHeldByCurrentThread)
+            {
+                Spinlock.s.Exit();
 
-                Thread.Sleep(100); // wait for the computation to complete.
+            while (numbersToCheck.Count > 0) 
+            {
+                Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
+                Spinlock.s.Exit();
 
-                //unlock if you got the lock
-                if (gotLock)
-                s.Exit();
-
+                    Thread.Sleep(100); // wait for the computation to complete.
+                }
+            Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
             }
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }

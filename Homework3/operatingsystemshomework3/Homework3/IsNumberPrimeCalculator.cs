@@ -16,21 +16,21 @@ namespace Homework3 {
             while (true) {
                 var numberToCheck = _numbersToCheck.Dequeue();
                 //Is a second spinlock needed? or use same one from before?
-                SpinLock s = new SpinLock();
-                bool gotLock = true;
 
 
+                Spinlock.s.Exit();
                 if (IsNumberPrime(numberToCheck)) {
                     //spinlock here to give time to process checks when possible  
-                    if (gotLock)
-                        s.Exit();
+                    if (!Spinlock.s.IsHeldByCurrentThread)
+                    {
+                        //unlock here to give time for I/O to go when nothing is ready to be checked     
+                        Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
+                        Spinlock.s.Exit();
 
-
-                    _primeNumbers.Add(numberToCheck);
-
-                    //unlock here to give time for I/O to go when nothing is ready to be checked     
-                        s.Enter(ref gotLock);
-
+                        _primeNumbers.Add(numberToCheck);
+                        
+                    }
+                    Spinlock.s.Enter(ref Spinlock.LockStatus);
                 }
             }
         }

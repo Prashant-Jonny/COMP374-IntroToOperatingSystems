@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 
+
 namespace Homework3 {
     class Program {
 
@@ -74,7 +75,8 @@ namespace Homework3 {
     }
 
     static class Constants {
+        //Changed to meet requirments
         public const long LowerBound = 1000000;
-        public const long UpperBound = 100000000;
+        public const long UpperBound = 5000000;
     }
 }
