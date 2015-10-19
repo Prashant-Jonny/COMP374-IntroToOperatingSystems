@@ -12,14 +12,20 @@ namespace Homework3 {
             _numbersToCheck = numbersToCheck;
         }
 
-        public void CheckIfNumbersArePrime() {
-            while (true) {
+        public void CheckIfNumbersArePrime() 
+        {
+            while (true) 
+            {
+
+                if (Spinlock.s.IsHeldByCurrentThread)
+                    Spinlock.s.Exit();
+
+                Spinlock.s.Enter(ref Spinlock.LockStatus);
+                //queue is starting empty
                 var numberToCheck = _numbersToCheck.Dequeue();
-                //Is a second spinlock needed? or use same one from before?
 
-
-                Spinlock.s.Exit();
-                if (IsNumberPrime(numberToCheck)) {
+                if (IsNumberPrime(numberToCheck)) 
+                {
                     //spinlock here to give time to process checks when possible  
                     if (!Spinlock.s.IsHeldByCurrentThread)
                     {

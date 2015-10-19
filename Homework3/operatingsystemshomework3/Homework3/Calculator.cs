@@ -8,10 +8,7 @@ namespace Homework3 {
 
         public void Run(NumberReader reader) {
             var results = new List<long>();
-            var numbersToCheck = new Queue<long>();
-
-            //Spinlock created
-             
+            var numbersToCheck = new Queue<long>();             
 
             StartComputationThreads(results, numbersToCheck);
 
