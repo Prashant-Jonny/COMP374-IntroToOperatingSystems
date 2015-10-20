@@ -21,19 +21,21 @@ namespace Homework3 {
             }
 
             //spin lock
-            if (Spinlock.s.IsHeldByCurrentThread)
-            {
-                Spinlock.s.Exit();
+            if (!Spinlock.S.IsHeldByCurrentThread)
+                Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
+
+                //Spinlock.S.Exit();
 
             while (numbersToCheck.Count > 0) 
             {
-                Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
-                Spinlock.s.Exit();
+                //Spinlock.S.Exit();
 
                     Thread.Sleep(100); // wait for the computation to complete.
                 }
-            Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
-            }
+           // Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
+            if (Spinlock.S.IsHeldByCurrentThread)
+                Spinlock.S.Exit();
+
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 

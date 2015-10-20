@@ -17,26 +17,26 @@ namespace Homework3 {
             while (true) 
             {
 
-                if (Spinlock.s.IsHeldByCurrentThread)
-                    Spinlock.s.Exit();
+                if (!Spinlock.S.IsHeldByCurrentThread)
+                    //Spinlock.S.Exit();
+                    Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
 
-                Spinlock.s.Enter(ref Spinlock.LockStatus);
                 //queue is starting empty
                 var numberToCheck = _numbersToCheck.Dequeue();
 
                 if (IsNumberPrime(numberToCheck)) 
                 {
                     //spinlock here to give time to process checks when possible  
-                    if (!Spinlock.s.IsHeldByCurrentThread)
-                    {
+                    
                         //unlock here to give time for I/O to go when nothing is ready to be checked     
-                        Spinlock.s.TryEnter(100, ref Spinlock.LockStatus);
-                        Spinlock.s.Exit();
+                        //Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
+
+
 
                         _primeNumbers.Add(numberToCheck);
-                        
-                    }
-                    Spinlock.s.Enter(ref Spinlock.LockStatus);
+
+                        if (Spinlock.S.IsHeldByCurrentThread)
+                            Spinlock.S.Exit();
                 }
             }
         }

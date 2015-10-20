@@ -10,8 +10,8 @@ namespace Homework3
 {
     public static class Spinlock
     {
-        public static SpinLock s = new SpinLock();
-        public static bool LockStatus = s.IsHeld;
+        public static SpinLock S = new SpinLock();
+        public static bool LockStatus = S.IsHeld;
     }
 }
 
