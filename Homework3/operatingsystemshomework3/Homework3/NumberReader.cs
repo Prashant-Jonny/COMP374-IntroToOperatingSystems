@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
-namespace Homework3 {
-    class NumberReader : IDisposable {
-        private readonly TextReader _reader;
+namespace Homework3
+{
+    internal class NumberReader : IDisposable
+    {
+        private Byte[] arr;
 
-        public NumberReader(FileInfo file) {
-            _reader = new StreamReader(new BufferedStream(new FileStream(
-                file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan), 65536));
+        public NumberReader(FileInfo file)
+        {
+            arr = File.ReadAllBytes(file.FullName);
         }
 
-        public IEnumerable<long> ReadIntegers() {
-            string line;
-            while ((line = _reader.ReadLine()) != null) {
-                var value = long.Parse(line);
+        public IEnumerable<long> ReadIntegers()
+        {
+            foreach (Byte b in arr)
+            {
+                var value = b;
                 yield return value;
             }
-        } 
+        }
 
-        public void Dispose() {
-            _reader.Dispose();
+        //Garbage collector should take care of this
+        //for a Byte array automatically
+        public void Dispose()
+        {
+
         }
     }
 }

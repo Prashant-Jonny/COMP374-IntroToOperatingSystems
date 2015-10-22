@@ -18,21 +18,12 @@ namespace Homework3 {
             {
 
                 if (!Spinlock.S.IsHeldByCurrentThread)
-                    //Spinlock.S.Exit();
                     Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
 
-                //queue is starting empty
                 var numberToCheck = _numbersToCheck.Dequeue();
 
                 if (IsNumberPrime(numberToCheck)) 
-                {
-                    //spinlock here to give time to process checks when possible  
-                    
-                        //unlock here to give time for I/O to go when nothing is ready to be checked     
-                        //Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
-
-
-
+                {                    
                         _primeNumbers.Add(numberToCheck);
 
                         if (Spinlock.S.IsHeldByCurrentThread)

@@ -24,15 +24,12 @@ namespace Homework3 {
             if (!Spinlock.S.IsHeldByCurrentThread)
                 Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
 
-                //Spinlock.S.Exit();
 
             while (numbersToCheck.Count > 0) 
             {
-                //Spinlock.S.Exit();
 
-                    Thread.Sleep(100); // wait for the computation to complete.
+                    Thread.Sleep(100); 
                 }
-           // Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
             if (Spinlock.S.IsHeldByCurrentThread)
                 Spinlock.S.Exit();
 
