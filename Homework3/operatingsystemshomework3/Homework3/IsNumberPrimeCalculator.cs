@@ -7,40 +7,57 @@ namespace Homework3 {
         private readonly ICollection<long> _primeNumbers;
         private readonly Queue<long> _numbersToCheck;
 
+        private SpinLock _s = new SpinLock();
+
         public IsNumberPrimeCalculator(ICollection<long> primeNumbers, Queue<long> numbersToCheck) {
             _primeNumbers = primeNumbers;
             _numbersToCheck = numbersToCheck;
         }
 
-        public void CheckIfNumbersArePrime() 
+        public void CheckIfNumbersArePrime()
         {
-            while (true) 
+            while (true)
             {
+                Boolean _lockStatus = false;
 
-                if (!Spinlock.S.IsHeldByCurrentThread)
-                    Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
+                //lockStatus = S.IsHeld;
 
-                var numberToCheck = _numbersToCheck.Dequeue();
+                if (_s.IsHeldByCurrentThread)
+                    _s.Exit();
 
-                if (IsNumberPrime(numberToCheck)) 
-                {                    
-                        _primeNumbers.Add(numberToCheck);
+                if (_numbersToCheck.Count != 0)
+                {
+                    if (!_s.IsHeld)
+                    {
+                        _s.TryEnter(ref _lockStatus);
 
-                        if (Spinlock.S.IsHeldByCurrentThread)
-                            Spinlock.S.Exit();
+                        if (_s.IsHeldByCurrentThread)
+                        {
+                            var numberToCheck = _numbersToCheck.Dequeue();
+
+                            if (IsNumberPrime(numberToCheck))
+                            {
+                                _primeNumbers.Add(numberToCheck);
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        private bool IsNumberPrime(long numberWeAreChecking) {
+        private bool IsNumberPrime(long numberWeAreChecking) 
+        {
             const long firstNumberToCheck = 3;
 
-            if (numberWeAreChecking % 2 == 0) {
+            if (numberWeAreChecking % 2 == 0) 
+            {
                 return false;
             }
             var lastNumberToCheck = Math.Sqrt(numberWeAreChecking);
-            for (var currentDivisor = firstNumberToCheck; currentDivisor < lastNumberToCheck; currentDivisor += 2) {
-                if (numberWeAreChecking % currentDivisor == 0) {
+            for (var currentDivisor = firstNumberToCheck; currentDivisor < lastNumberToCheck; currentDivisor += 2) 
+            {
+                if (numberWeAreChecking % currentDivisor == 0) 
+                {
                     return false;
                 }
             }

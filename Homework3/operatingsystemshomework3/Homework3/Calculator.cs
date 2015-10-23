@@ -6,7 +6,8 @@ using System.Threading;
 namespace Homework3 {
     internal class Calculator {
 
-        public void Run(NumberReader reader) {
+        public void Run(NumberReader reader) 
+        {
             var results = new List<long>();
             var numbersToCheck = new Queue<long>();             
 
@@ -16,23 +17,14 @@ namespace Homework3 {
 
             new Thread(progressMonitor.Run) {IsBackground = true}.Start();
             
-            foreach (var value in reader.ReadIntegers()) {
+            foreach (var value in reader.ReadIntegers()) 
+            {
                 numbersToCheck.Enqueue(value);
             }
-
-            //spin lock
-            if (!Spinlock.S.IsHeldByCurrentThread)
-                Spinlock.S.TryEnter(100, ref Spinlock.LockStatus);
-
-
             while (numbersToCheck.Count > 0) 
             {
-
                     Thread.Sleep(100); 
                 }
-            if (Spinlock.S.IsHeldByCurrentThread)
-                Spinlock.S.Exit();
-
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 

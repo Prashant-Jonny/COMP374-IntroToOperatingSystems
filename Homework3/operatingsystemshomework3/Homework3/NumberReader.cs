@@ -11,6 +11,7 @@ namespace Homework3
 
         public NumberReader(FileInfo file)
         {
+            arr = new byte[(Constants.UpperBound - Constants.LowerBound) + 1];
             arr = File.ReadAllBytes(file.FullName);
         }
 
