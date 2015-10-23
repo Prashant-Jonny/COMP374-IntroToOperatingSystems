@@ -78,5 +78,6 @@ namespace Homework3 {
         //Changed to meet requirments
         public const long LowerBound = 1000000;
         public const long UpperBound = 5000000;
+        public const long ArraySize = (UpperBound - LowerBound) + 1;
     }
 }

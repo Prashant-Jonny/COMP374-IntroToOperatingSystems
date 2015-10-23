@@ -7,28 +7,21 @@ namespace Homework3
 {
     internal class NumberReader : IDisposable
     {
-        private Byte[] arr;
+        private Byte[] _arr;
 
         public NumberReader(FileInfo file)
         {
-            arr = new byte[(Constants.UpperBound - Constants.LowerBound) + 1];
-            arr = File.ReadAllBytes(file.FullName);
+            _arr = new byte[Constants.ArraySize];
+            _arr = File.ReadAllBytes(file.FullName);
         }
 
-        public IEnumerable<long> ReadIntegers()
+        public Byte[] ReadIntegers()
         {
-            foreach (Byte b in arr)
-            {
-                var value = b;
-                yield return value;
-            }
+            return _arr;
         }
 
         //Garbage collector should take care of this
         //for a Byte array automatically
-        public void Dispose()
-        {
-
-        }
+        public void Dispose(){}
     }
 }

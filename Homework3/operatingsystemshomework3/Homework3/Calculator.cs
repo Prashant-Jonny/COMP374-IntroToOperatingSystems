@@ -5,26 +5,31 @@ using System.Threading;
 
 namespace Homework3 {
     internal class Calculator {
+        private Queue<long> _numbersToCheck ;
+        private List<long> _results; 
 
         public void Run(NumberReader reader) 
         {
-            var results = new List<long>();
-            var numbersToCheck = new Queue<long>();             
+            _numbersToCheck = new Queue<long>();
+            _results = new List<long>();
 
-            StartComputationThreads(results, numbersToCheck);
+            StartComputationThreads(_results, _numbersToCheck);
 
-            var progressMonitor = new ProgressMonitor(results);
+            var progressMonitor = new ProgressMonitor(_results);
 
             new Thread(progressMonitor.Run) {IsBackground = true}.Start();
-            
-            foreach (var value in reader.ReadIntegers()) 
+
+            foreach (var value in reader.ReadIntegers())
             {
-                numbersToCheck.Enqueue(value);
+                lock (_numbersToCheck)
+                {
+                    _numbersToCheck.Enqueue(value);
+                }
             }
-            while (numbersToCheck.Count > 0) 
+            while (_numbersToCheck.Count > 0) 
             {
                     Thread.Sleep(100); 
-                }
+             }
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 
