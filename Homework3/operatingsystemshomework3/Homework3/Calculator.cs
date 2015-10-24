@@ -13,7 +13,10 @@ namespace Homework3 {
             _numbersToCheck = new Queue<long>();
             _results = new List<long>();
 
-            StartComputationThreads(_results, _numbersToCheck);
+            lock (_numbersToCheck)
+            {
+                StartComputationThreads(_results, _numbersToCheck);
+            }
 
             var progressMonitor = new ProgressMonitor(_results);
 
@@ -25,11 +28,13 @@ namespace Homework3 {
                 {
                     _numbersToCheck.Enqueue(value);
                 }
-            }
-            while (_numbersToCheck.Count > 0) 
-            {
-                    Thread.Sleep(100); 
-             }
+            }            
+                while (_numbersToCheck.Count > 0)
+                {
+                    Thread.Sleep(100);
+                }
+            
+
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 

@@ -20,35 +20,36 @@ namespace Homework3
 
         public void CheckIfNumbersArePrime()
         {
-            
             while (true)
             {
                 _lockStatus = false;
                 if (_s.IsHeldByCurrentThread)
                     _s.Exit();
 
-                if (_numbersToCheck.Count != 0)
+                lock (_numbersToCheck)
                 {
-                    if (!_s.IsHeld)
+                    if (_numbersToCheck.Count != 0)
                     {
-                        _s.TryEnter(ref _lockStatus);
 
-                        if (_s.IsHeldByCurrentThread)
+                        if (!_s.IsHeld)
                         {
-                            lock (_numbersToCheck)
-                            {
-                                var numberToCheck = _numbersToCheck.Dequeue();
+                            _s.TryEnter(ref _lockStatus);
 
-                                if (IsNumberPrime(numberToCheck))
-                                {
-                                    _primeNumbers.Add(numberToCheck);
+                            if (_s.IsHeldByCurrentThread)
+                            {
+                                
+                                    var numberToCheck = _numbersToCheck.Dequeue();
+
+                                    if (IsNumberPrime(numberToCheck))
+                                    {
+                                        _primeNumbers.Add(numberToCheck);
+                                    }
                                 }
-                            }
+                            
                         }
                     }
                 }
             }
-
         }
 
         private bool IsNumberPrime(long numberWeAreChecking) 
