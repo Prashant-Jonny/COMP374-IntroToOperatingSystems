@@ -6,52 +6,31 @@ namespace Homework3
 {
     internal class IsNumberPrimeCalculator
     {
-        private readonly  List<long> _primeNumbers;
-        private readonly  Queue<long> _numbersToCheck;
-
-        private SpinLock _s = new SpinLock();
-        private Boolean _lockStatus;
+        private BoundBuffer<long> _boundBuffer; 
 
         public IsNumberPrimeCalculator(List<long> primeNumbers, Queue<long> numbersToCheck) 
         {
-            BoundBuffer<long> boundBuffer = new BoundBuffer<long>();
-            boundBuffer.SetList(primeNumbers);
-            boundBuffer.SetQueue(numbersToCheck);
-
-            _primeNumbers = boundBuffer.GetList();
-            _numbersToCheck = boundBuffer.GetQueue();
+             _boundBuffer = new BoundBuffer<long>();
+            _boundBuffer.SetList(primeNumbers);
+            _boundBuffer.SetQueue(numbersToCheck);
         }
 
         public void CheckIfNumbersArePrime()
         {
             while (true)
             {
-                _lockStatus = false;
-                if (_s.IsHeldByCurrentThread)
-                    _s.Exit();
-
-                lock (_numbersToCheck)
+                lock (_boundBuffer.GetQueue())
                 {
 
-                    if (_numbersToCheck.Count != 0)
+                    if (_boundBuffer.GetQueue().Count != 0)
                     {
-
-                        if (!_s.IsHeld)
-                        {
-                            _s.TryEnter(ref _lockStatus);
-
-                            if (_s.IsHeldByCurrentThread)
-                            {
-                                
-                                    var numberToCheck = _numbersToCheck.Dequeue();
+                                    var numberToCheck = _boundBuffer.GetQueue().Dequeue();
 
                                 if (IsNumberPrime(numberToCheck))
                                 {
-                                    _primeNumbers.Add(numberToCheck);
+                                    _boundBuffer.GetList().Add(numberToCheck);
                                 }
-                            }
                        }
-                    }
                 }
             }
         }

@@ -7,35 +7,32 @@ namespace Homework3
 {
     internal class Calculator 
     {
-        private BoundBuffer<long>  _boundBuffer;
-        private Queue<long> _newQueue;
-        private List<long> _newList; 
+        private readonly BoundBuffer<long>  _boundBuffer = new BoundBuffer<long>();
 
         public void Run(NumberReader reader) 
         {
-            _boundBuffer = new BoundBuffer<long>();
-            _newQueue = _boundBuffer.GetQueue();
-            _newList = _boundBuffer.GetList();
 
-            lock(_newQueue)
+            lock (_boundBuffer)
             {
-                StartComputationThreads(_newList, _newQueue);
+                StartComputationThreads(_boundBuffer.GetList(), _boundBuffer.GetQueue());
+
+
+                var progressMonitor = new ProgressMonitor(_boundBuffer.GetList());
+
+                new Thread(progressMonitor.Run) {IsBackground = true}.Start();
+
+                foreach (var value in reader.ReadIntegers())
+                {
+                    _boundBuffer.Enqueue(value);
+                }
+
+                while (_boundBuffer.GetQueue().Count > 0)
+                {
+                    Thread.Sleep(100);
+                }
+
+                Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
             }
-
-            var progressMonitor = new ProgressMonitor(_newList);
-
-            new Thread(progressMonitor.Run) {IsBackground = true}.Start();
-
-            foreach (var value in reader.ReadIntegers())
-            {
-                    _boundBuffer.Enqueue(value);                                
-            }            
-
-            while (_newQueue.Count > 0)    
-            {
-                 Thread.Sleep(100);
-             }
-            Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 
         private static void StartComputationThreads(List<long> results, Queue<long> numbersToCheck) {

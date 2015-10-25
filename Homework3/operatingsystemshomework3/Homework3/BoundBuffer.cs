@@ -13,16 +13,7 @@ namespace Homework3
         private  Queue<T> _queue = new Queue<T>();
         private  List<T> _list = new List<T>();
 
-        public Queue<T> GetQueue()
-        {
-            return _queue;
-        }
-
-        public List<T> GetList()
-        {
-            return _list;
-        }
-
+        //List
         public void Add(T item)
         {
             lock (_list)
@@ -36,16 +27,18 @@ namespace Homework3
             }
         }
 
-        public void SetQueue(Queue<T> q)
-        {
-            _queue = q;
-        }
-
         public void SetList(List<T> l)
         {
-            _list = l;
+            lock (_list)
+                _list = l;
         }
 
+        public List<T> GetList()
+        {
+            return _list;
+        }
+
+        //Queue
         public void Enqueue(T item)
         {
             lock (_queue)
@@ -71,6 +64,17 @@ namespace Homework3
                 Monitor.Pulse(_queue);
                 return item;
             }
+        }
+
+        public void SetQueue(Queue<T> q)
+        {
+            lock (_queue)
+                _queue = q;
+        }
+
+        public Queue<T> GetQueue()
+        {
+            return _queue;
         }
     }
 }
