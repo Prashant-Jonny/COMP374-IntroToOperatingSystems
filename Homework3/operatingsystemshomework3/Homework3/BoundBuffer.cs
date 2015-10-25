@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Homework3
 {
     internal class BoundBuffer<T>
     {
         private const long MaxSize = Constants.ArraySize;
-        private  Queue<T> _queue = new Queue<T>();
-        private  List<T> _list = new List<T>();
+        private Queue<T> _queue = new Queue<T>();
+        private List<T> _list = new List<T>();
 
         //List
         public void Add(T item)
@@ -23,14 +19,16 @@ namespace Homework3
                     Monitor.Wait(_list);
                 }
                 _list.Add(item);
-            Monitor.Pulse(_list);
+                Monitor.Pulse(_list);
             }
         }
 
         public void SetList(List<T> l)
         {
             lock (_list)
+            {
                 _list = l;
+            }
         }
 
         public List<T> GetList()
@@ -69,7 +67,9 @@ namespace Homework3
         public void SetQueue(Queue<T> q)
         {
             lock (_queue)
+            {
                 _queue = q;
+            }
         }
 
         public Queue<T> GetQueue()

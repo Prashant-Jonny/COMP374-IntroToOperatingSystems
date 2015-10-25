@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.IO;
-using System.Threading;
 
-
-namespace Homework3 {
-    class Program {
-
+namespace Homework3 
+{
+    class Program 
+    {
         /*
          * Homework #3
          * 

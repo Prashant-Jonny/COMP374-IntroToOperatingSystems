@@ -11,21 +11,19 @@ namespace Homework3
 
         public void Run(NumberReader reader) 
         {
-
             lock (_boundBuffer)
             {
                 StartComputationThreads(_boundBuffer.GetList(), _boundBuffer.GetQueue());
-
 
                 var progressMonitor = new ProgressMonitor(_boundBuffer.GetList());
 
                 new Thread(progressMonitor.Run) {IsBackground = true}.Start();
 
-                foreach (var value in reader.ReadIntegers())
+               foreach (var value in reader.ReadIntegers())
                 {
                     _boundBuffer.Enqueue(value);
                 }
-
+                    
                 while (_boundBuffer.GetQueue().Count > 0)
                 {
                     Thread.Sleep(100);
