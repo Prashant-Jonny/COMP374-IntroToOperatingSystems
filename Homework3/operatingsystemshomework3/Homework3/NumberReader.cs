@@ -7,7 +7,7 @@ namespace Homework3
 {
     internal class NumberReader : IDisposable
     {
-        private Byte[] _arr;
+        private readonly Byte[] _arr;
 
         public NumberReader(FileInfo file)
         {

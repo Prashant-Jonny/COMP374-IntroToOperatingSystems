@@ -48,7 +48,7 @@ namespace Homework3 {
                     }
                     var totalSeconds = (DateTime.Now - startTime).TotalSeconds;
                     Console.WriteLine("Program took {0} seconds to run", totalSeconds);
-                    Console.ReadLine();
+                    //Console.ReadLine();
                 } else {
                     PrintUsage();
                 }
@@ -79,6 +79,6 @@ namespace Homework3 {
         //Changed to meet requirments
         public const long LowerBound = 1000000;
         public const long UpperBound = 5000000;
-        public const long ArraySize = (UpperBound - LowerBound) + 1;
+        public const long ArraySize = UpperBound - LowerBound;
     }
 }

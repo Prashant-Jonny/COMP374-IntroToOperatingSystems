@@ -3,43 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Homework3 {
-    internal class Calculator {
-        private Queue<long> _numbersToCheck ;
-        private List<long> _results; 
+namespace Homework3 
+{
+    internal class Calculator 
+    {
+        private BoundBuffer<long>  _boundBuffer;
+        private Queue<long> _newQueue;
+        private List<long> _newList; 
 
         public void Run(NumberReader reader) 
         {
-            _numbersToCheck = new Queue<long>();
-            _results = new List<long>();
+            _boundBuffer = new BoundBuffer<long>();
+            _newQueue = _boundBuffer.GetQueue();
+            _newList = _boundBuffer.GetList();
 
-            lock (_numbersToCheck)
+            lock(_newQueue)
             {
-                StartComputationThreads(_results, _numbersToCheck);
+                StartComputationThreads(_newList, _newQueue);
             }
 
-            var progressMonitor = new ProgressMonitor(_results);
+            var progressMonitor = new ProgressMonitor(_newList);
 
             new Thread(progressMonitor.Run) {IsBackground = true}.Start();
 
             foreach (var value in reader.ReadIntegers())
             {
-                lock (_numbersToCheck)
-                {
-                    _numbersToCheck.Enqueue(value);
-                }
+                    _boundBuffer.Enqueue(value);                                
             }            
-                while (_numbersToCheck.Count > 0)
-                {
-                    Thread.Sleep(100);
-                }
-            
 
+            while (_newQueue.Count > 0)    
+            {
+                 Thread.Sleep(100);
+             }
             Console.WriteLine("{0} of the numbers were prime", progressMonitor.TotalCount);
         }
 
         private static void StartComputationThreads(List<long> results, Queue<long> numbersToCheck) {
-            var threads = CreateThreads(results, numbersToCheck);
+        var threads = CreateThreads(results, numbersToCheck);
             threads.ForEach(thread => thread.Start());
         }
         

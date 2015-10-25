@@ -4,18 +4,22 @@ using System.Threading;
 
 namespace Homework3
 {
-    internal class IsNumberPrimeCalculator 
+    internal class IsNumberPrimeCalculator
     {
-        private readonly ICollection<long> _primeNumbers;
-        private readonly Queue<long> _numbersToCheck;
+        private readonly  List<long> _primeNumbers;
+        private readonly  Queue<long> _numbersToCheck;
 
         private SpinLock _s = new SpinLock();
         private Boolean _lockStatus;
 
-        public IsNumberPrimeCalculator(ICollection<long> primeNumbers, Queue<long> numbersToCheck) 
+        public IsNumberPrimeCalculator(List<long> primeNumbers, Queue<long> numbersToCheck) 
         {
-            _primeNumbers = primeNumbers;
-            _numbersToCheck = numbersToCheck;
+            BoundBuffer<long> boundBuffer = new BoundBuffer<long>();
+            boundBuffer.SetList(primeNumbers);
+            boundBuffer.SetQueue(numbersToCheck);
+
+            _primeNumbers = boundBuffer.GetList();
+            _numbersToCheck = boundBuffer.GetQueue();
         }
 
         public void CheckIfNumbersArePrime()
@@ -28,6 +32,7 @@ namespace Homework3
 
                 lock (_numbersToCheck)
                 {
+
                     if (_numbersToCheck.Count != 0)
                     {
 
@@ -40,19 +45,18 @@ namespace Homework3
                                 
                                     var numberToCheck = _numbersToCheck.Dequeue();
 
-                                    if (IsNumberPrime(numberToCheck))
-                                    {
-                                        _primeNumbers.Add(numberToCheck);
-                                    }
+                                if (IsNumberPrime(numberToCheck))
+                                {
+                                    _primeNumbers.Add(numberToCheck);
                                 }
-                            
-                        }
+                            }
+                       }
                     }
                 }
             }
         }
 
-        private bool IsNumberPrime(long numberWeAreChecking) 
+        private static bool IsNumberPrime(long numberWeAreChecking) 
         {
             const long firstNumberToCheck = 3;
 
