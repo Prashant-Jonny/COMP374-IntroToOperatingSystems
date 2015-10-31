@@ -4,6 +4,7 @@ using System.Threading;
 namespace Homework3
 {
     internal class BoundBuffer<T>
+        //Most locking takes place here in order to "outsource" the locking to the bound buffer
     {
         private const long MaxSize = Constants.ArraySize;
         private Queue<T> _queue = new Queue<T>();
