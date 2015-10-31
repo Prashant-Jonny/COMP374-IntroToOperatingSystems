@@ -9,6 +9,7 @@ namespace Homework3
 
         public IsNumberPrimeCalculator(List<long> primeNumbers, Queue<long> numbersToCheck) 
         {
+            //Dynamically allocated BB and sets list/queue as BB objects to keep them encapsulated
              _boundBuffer = new BoundBuffer<long>();
             _boundBuffer.SetList(primeNumbers);
             _boundBuffer.SetQueue(numbersToCheck);
@@ -18,20 +19,16 @@ namespace Homework3
         {
             while (true)
             {
+                //lock needed to not dequeue over maxSize with another thread
                 lock (_boundBuffer.GetQueue())
                 {
                     if (_boundBuffer.GetQueue().Count != 0)
                     {
                          var numberToCheck = _boundBuffer.GetQueue().Dequeue();
 
-                                if (IsNumberPrime(numberToCheck))
-                                {
-                                    lock (_boundBuffer.GetList())
-                                    {
-                                        _boundBuffer.GetList().Add(numberToCheck);
-                                    }
-                                }
-                       }
+                        if (IsNumberPrime(numberToCheck))
+                            _boundBuffer.GetList().Add(numberToCheck);
+                    }
                 }
             }
         }

@@ -11,6 +11,7 @@ namespace Homework3
 
         public ProgressMonitor(List<long> results) 
         {
+            //Dynamically allocates data for BB and sets results list as the BB's list.
              _boundBuffer = new BoundBuffer<long>();
             _boundBuffer.SetList(results);
         }
@@ -21,16 +22,13 @@ namespace Homework3
             {
                 Thread.Sleep(100);
 
-                lock (_boundBuffer.GetList())
-                {
                     var currentcount = _boundBuffer.GetList().Count;
                     TotalCount += currentcount;
 
                     _boundBuffer.GetList().Clear(); // clear out the current primes to save some memory
 
-                    if (currentcount > 0)
+                   if (currentcount > 0)
                         Console.WriteLine("{0} primes found so far", TotalCount);
-                }
             }
         }
     }

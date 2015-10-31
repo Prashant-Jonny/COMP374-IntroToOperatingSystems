@@ -25,10 +25,7 @@ namespace Homework3
 
         public void SetList(List<T> l)
         {
-            lock (_list)
-            {
-                _list = l;
-            }
+            _list = l;
         }
 
         public List<T> GetList()
@@ -66,10 +63,7 @@ namespace Homework3
 
         public void SetQueue(Queue<T> q)
         {
-            lock (_queue)
-            {
-                _queue = q;
-            }
+            _queue = q;
         }
 
         public Queue<T> GetQueue()
