@@ -1,34 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Homework3
 {
     internal class NumberReader : IDisposable
     {
-        private readonly byte[] _arr;
+        private readonly StreamReader _reader;
+        private long[] _arr;
+
         public NumberReader(FileSystemInfo file)
         {
-             //Dynamically allocated byte array and reads everything in
-            var lineCount = File.ReadAllLines(file.FullName).Length;
-            _arr = new byte[lineCount];
-                        Console.WriteLine("length: "+_arr.Length);
+             var lineCount = File.ReadAllLines(file.FullName).Length;
+             _arr = new long[lineCount];
 
-            _arr = File.ReadAllBytes(file.FullName);
-
-            Console.WriteLine("First byte: {0}", _arr[0]);
-            Console.WriteLine("Last byte: {0}", _arr[_arr.Length - 1]);
-            Console.WriteLine("length: "+_arr.Length);
+            _reader = new StreamReader(new BufferedStream(new
+                FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan), 65536));
         }
 
-        public byte[] ReadIntegers()
+        public long[] ReadIntegers()
         {
-            //instead of yield return and iterating through each number just returning an array also seems to work
+            string x;
+            var i = 0;
+            while ((x = _reader.ReadLine()) != null)
+            {
+                _arr[i] = long.Parse(x);
+                i++;
+            }
             return _arr;
-         }
+        }
 
         //Garbage collector should take care of this
-        //for a Byte array automatically
-        public void Dispose(){}
+        //for an  array automatically
+        public void Dispose() { }
 
     }
 }
